@@ -47,11 +47,11 @@ class NetteTypefulExtension extends CompilerExtension
             'schemaConverter' => Service\SchemaConverter::class,
         ]);
 
-        $filterService = $builder->addDefinition($this->prefix('propertyFilter'))
+        $builder->addDefinition($this->prefix('propertyFilter'))
             ->setType(PropertyFilter::class);
 
         if ($builder->hasDefinition('nette.latteFactory')) {
-            $this->loadLatteFilters($builder, $staticConfig);
+            $this->loadLatteFilters($builder, $config);
         }
     }
 
