@@ -1,0 +1,37 @@
+{
+  "name": "sestep/nette-typeful",
+  "type": "library",
+  "description": "Extension of Typeful package for Nette framework",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Štěpán Śevčík",
+      "email": "Thoronir42@Gmail.com"
+    }
+  ],
+  "scripts": {
+    "test": "phpunit ./test"
+  },
+  "require": {
+    "php": "^7.3",
+    "sestep/typeful": "^0.5.1",
+    "nette/forms": "^3.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.3"
+  },
+  "suggest": {
+    "nette/di": "For simpler integration into Nette DI based applications",
+    "ublaboo/datagrid": "To generate grids from typeful information"
+  },
+  "autoload": {
+    "psr-4": {
+      "SeStep\\NetteTypeful\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "SeStep\\NetteTypeful\\": "test/"
+    }
+  }
+}
