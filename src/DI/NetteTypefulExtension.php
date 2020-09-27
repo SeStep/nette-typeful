@@ -3,11 +3,18 @@
 namespace SeStep\NetteTypeful\DI;
 
 use Nette\DI\CompilerExtension;
+use Nette\DI\ContainerBuilder;
+use Nette\DI\Definitions\FactoryDefinition;
+use Nette\DI\Definitions\ServiceDefinition;
+use Nette\InvalidArgumentException;
 use Nette\InvalidStateException;
+use Nette\Schema\Expect;
+use Nette\Schema\Schema;
 use SeStep\Typeful\DI\TypefulExtension;
 use SeStep\Typeful\DI\TypefulLoader;
 use SeStep\NetteTypeful\Components;
 use SeStep\NetteTypeful\Forms;
+use SeStep\NetteTypeful\Latte\PropertyFilter;
 use SeStep\NetteTypeful\Service;
 
 class NetteTypefulExtension extends CompilerExtension
@@ -16,18 +23,63 @@ class NetteTypefulExtension extends CompilerExtension
 
     public const TAG_TYPE_CONTROL_FACTORY = 'netteTypeful.typeControlFactory';
 
+    public function getConfigSchema(): Schema
+    {
+        return Expect::structure([
+            'filters' => Expect::structure([
+                'displayEntityProperty' => Expect::string('typefulPropertyValue'),
+                'displayPropertyName' => Expect::string('typefulPropertyName'),
+            ]),
+        ]);
+    }
+
     public function loadConfiguration()
     {
         $builder = $this->getContainerBuilder();
-        $config = $this->loadFromFile(__DIR__ . '/netteTypefulExtension.neon');
+        $staticConfig = $this->loadFromFile(__DIR__ . '/netteTypefulExtension.neon');
+        $config = $this->getConfig();
 
-        $this->initTypeful($builder, $config['typeful']);
+        $this->initTypeful($builder, $staticConfig['typeful']);
         $this->loadDefinitionsFromConfig([
             'propertyControlFactory' => Forms\PropertyControlFactory::class,
             'formPopulator' => Forms\EntityFormPopulator::class,
             'entityGridFactory' => Components\EntityGridFactory::class,
             'schemaConverter' => Service\SchemaConverter::class,
         ]);
+
+        $filterService = $builder->addDefinition($this->prefix('propertyFilter'))
+            ->setType(PropertyFilter::class);
+
+        if ($builder->hasDefinition('nette.latteFactory')) {
+            $this->loadLatteFilters($builder, $staticConfig);
+        }
+    }
+
+    private function loadLatteFilters(ContainerBuilder $builder, $config)
+    {
+        $filterService = $builder->getDefinition($this->prefix('propertyFilter'));
+
+        $latteFactory = $this->getContainerBuilder()->getDefinition('nette.latteFactory');
+        if ($latteFactory instanceof FactoryDefinition) {
+            $latteFactory = $latteFactory->getResultDefinition();
+        }
+        if (!($latteFactory instanceof ServiceDefinition)) {
+            throw new InvalidStateException("Could not initialize latte filters on " . get_class($latteFactory));
+        }
+
+        foreach ($config->filters as $filterMethod => $registerName) {
+            if (!preg_match('/^\w+$/', $registerName)) {
+                $paramName = $this->prefix("filters.$filterMethod");
+                throw new InvalidArgumentException("Parameter '$paramName' must match `^\w+$` pattern," .
+                    " got '$registerName'");
+            }
+
+            $latteFactory->addSetup("\$service->addFilter(?, [?, ?])", [
+                $registerName,
+                $filterService,
+                $filterMethod,
+            ]);
+        }
     }
 
     public function beforeCompile()
