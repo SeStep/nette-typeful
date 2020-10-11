@@ -10,8 +10,8 @@ use Nette\InvalidArgumentException;
 use Nette\InvalidStateException;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
+use SeStep\Typeful\DI\RegisterTypeful;
 use SeStep\Typeful\DI\TypefulExtension;
-use SeStep\Typeful\DI\TypefulLoader;
 use SeStep\NetteTypeful\Components;
 use SeStep\NetteTypeful\Forms;
 use SeStep\NetteTypeful\Latte\PropertyFilter;
@@ -19,7 +19,7 @@ use SeStep\NetteTypeful\Service;
 
 class NetteTypefulExtension extends CompilerExtension
 {
-    use TypefulLoader;
+    use RegisterTypeful;
 
     public const TAG_TYPE_CONTROL_FACTORY = 'netteTypeful.typeControlFactory';
 
@@ -35,11 +35,13 @@ class NetteTypefulExtension extends CompilerExtension
 
     public function loadConfiguration()
     {
+        $this->registerTypefulTypePlugin('netteControlFactory', Expect::mixed(), self::TAG_TYPE_CONTROL_FACTORY);
+
         $builder = $this->getContainerBuilder();
         $staticConfig = $this->loadFromFile(__DIR__ . '/netteTypefulExtension.neon');
         $config = $this->getConfig();
 
-        $this->initTypeful($builder, $staticConfig['typeful']);
+        $this->registerTypeful($staticConfig['typeful']);
         $this->loadDefinitionsFromConfig([
             'propertyControlFactory' => Forms\PropertyControlFactory::class,
             'formPopulator' => Forms\EntityFormPopulator::class,
