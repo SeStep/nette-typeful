@@ -24,7 +24,7 @@ class EntityFormPopulator
 
     public function fillFromReflection(Form $form, string $entityName, array $properties = [])
     {
-        $descriptor = $this->entityDescriptorRegistry->getEntityDescriptor($entityName);
+        $descriptor = $this->entityDescriptorRegistry->getEntityDescriptor($entityName, true);
 
         foreach ($this->retrieveProperties($descriptor, $properties) as $name => $property) {
             $label = $descriptor->getPropertyFullName($name);
