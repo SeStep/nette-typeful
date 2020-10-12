@@ -87,6 +87,7 @@ class NetteTypefulExtension extends CompilerExtension
     public function beforeCompile()
     {
         $builder = $this->getContainerBuilder();
+        $this->finalizeIntegrationsWithExtensions($builder);
 
         $controlFactories = [];
         $controlFactoriesDefinitions = $builder->findByTag(self::TAG_TYPE_CONTROL_FACTORY);
@@ -103,5 +104,22 @@ class NetteTypefulExtension extends CompilerExtension
 
         $propertyControlFactory = $builder->getDefinition($this->prefix('propertyControlFactory'));
         $propertyControlFactory->setArgument('typeMap', $controlFactories);
+    }
+
+    private function finalizeIntegrationsWithExtensions(ContainerBuilder $builder)
+    {
+        $typefulExtensionArr = $this->compiler->getExtensions(TypefulExtension::class);
+        if (!empty($typefulExtensionArr)) {
+            $typefulExtensionName = key($typefulExtensionArr);
+            $this->initializeFactoriesForBaseTypes($builder, $typefulExtensionName);
+        }
+    }
+
+    private function initializeFactoriesForBaseTypes(ContainerBuilder $builder, string $typefulExtensionName)
+    {
+        $builder->getDefinition("$typefulExtensionName.type.int")
+            ->addTag(self::TAG_TYPE_CONTROL_FACTORY, 'SeStep\NetteTypeful\Forms\StandardControlsFactory::createInt');
+        $builder->getDefinition("$typefulExtensionName.type.text")
+            ->addTag(self::TAG_TYPE_CONTROL_FACTORY, 'SeStep\NetteTypeful\Forms\StandardControlsFactory::createText');
     }
 }
