@@ -14,7 +14,7 @@
   },
   "require": {
     "php": "^7.3",
-    "sestep/typeful": "^0.7.0",
+    "sestep/typeful": "^0.7.4",
     "nette/forms": "^3.0"
   },
   "require-dev": {
