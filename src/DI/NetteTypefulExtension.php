@@ -45,6 +45,7 @@ class NetteTypefulExtension extends CompilerExtension
         $this->loadDefinitionsFromConfig([
             'propertyControlFactory' => Forms\PropertyControlFactory::class,
             'formPopulator' => Forms\EntityFormPopulator::class,
+            'entityFormFactory' => Forms\EntityFormFactory::class,
             'entityGridFactory' => Components\EntityGridFactory::class,
             'schemaConverter' => Service\SchemaConverter::class,
         ]);
