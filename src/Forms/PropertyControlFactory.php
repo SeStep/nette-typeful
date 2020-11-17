@@ -69,12 +69,21 @@ class PropertyControlFactory
 
     public function createByProperty(string $label, Property $property): IControl
     {
-        $options = $property->getTypeOptions();
-        $control = $this->create($label, $property->getType(), $options);
+        $options = $property->getOptions();
+        $fieldType = $property->getType();
+        $control = $this->create($label, $fieldType, $options);
 
-        if (method_exists($control, 'setRequired')) {
-            $control->setRequired(true);
+        $required = $options['required'] ?? true;
+
+        if ($required) {
+            if (method_exists($control, 'setRequired')) {
+                $control->setRequired(true);
+            } else {
+                $controlClass = get_class($control);
+                trigger_error("Could not setRequired on '$controlClass' (control for type '$fieldType')");
+            }
         }
+
 
         return $control;
     }
