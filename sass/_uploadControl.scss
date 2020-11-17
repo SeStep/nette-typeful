@@ -1,0 +1,48 @@
+.ss-typeful-upload {
+
+  .previews-box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .preview-item {
+    position: relative;
+
+    .delete-toggle {
+      position: absolute;
+      top: 0.25em;
+      right: 0.25em;
+      padding: 0.25em;
+
+      &:checked ~ .file-preview {
+        img {
+          filter: saturate(0.2) opacity(0.75);
+        }
+      }
+    }
+  }
+
+  .file-preview {
+    padding: 4px;
+    border-radius: 0.25rem;
+  }
+
+  .file-preview-image {
+    width: 128px;
+    height: 128px;
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(#888, 0.1);
+    box-shadow: rgba(#888, 0.5) 2px 2px 6px;
+
+    img {
+      transition: filter 100ms ease;
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
+}

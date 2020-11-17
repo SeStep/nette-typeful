@@ -8,6 +8,7 @@ use Nette\Forms\Controls\TextArea;
 use Nette\Forms\Controls\TextInput;
 use Nette\Forms\Controls\UploadControl;
 use Nette\InvalidArgumentException;
+use SeStep\NetteTypeful\Controls\TypefulUploadControl;
 use SeStep\NetteTypeful\Types\FileType;
 use SeStep\Typeful\Types as TypefulTypes;
 
@@ -41,7 +42,7 @@ class StandardControlsFactory
 
     public static function createFile(string $label, FileType $fileType, array $options)
     {
-        $uploadControl = new UploadControl($label);
+        $uploadControl = new TypefulUploadControl($fileType, $options, $label);
         if (isset($options['fileType'])) {
             if ($options['fileType'] === 'image') {
                 $uploadControl->addRule(Form::IMAGE);

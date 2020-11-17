@@ -1,0 +1,4 @@
+fileUpload:
+    delete: Delete
+    no_preview: No preview
+    show_preview: Show preview
