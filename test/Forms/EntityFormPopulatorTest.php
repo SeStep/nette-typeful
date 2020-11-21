@@ -7,7 +7,7 @@ use Nette\Forms\Form;
 use Nette\Forms\Controls\TextArea;
 use Nette\Forms\Controls\TextInput;
 use PHPUnit\Framework\TestCase;
-use SeStep\NetteTypeful\TestDoubles\PropertyFactory;
+use SeStep\NetteTypeful\TestUtils\PropertyFactory;
 use SeStep\Typeful\TestDoubles\RegistryFactory;
 
 class EntityFormPopulatorTest extends TestCase

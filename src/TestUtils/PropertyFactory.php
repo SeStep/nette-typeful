@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SeStep\NetteTypeful\TestDoubles;
+namespace SeStep\NetteTypeful\TestUtils;
 
 use SeStep\NetteTypeful\Forms\PropertyControlFactory;
 use SeStep\NetteTypeful\Forms\StandardControlsFactory;
