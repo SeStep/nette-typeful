@@ -7,13 +7,14 @@ use Nette\Http\FileUpload;
 use Nette\InvalidArgumentException;
 use Nette\Localization\ITranslator;
 use Nette\Utils\Html;
-use SeStep\Typeful\Types\CommitAwareType;
 use SeStep\Typeful\Types\OptionallyUpdate;
+use SeStep\Typeful\Types\PostStoreCommit;
+use SeStep\Typeful\Types\PreStoreNormalize;
 use SeStep\Typeful\Types\PropertyType;
 use SeStep\Typeful\Types\SerializesValue;
 use SeStep\Typeful\Validation\ValidationError;
 
-class FileType implements PropertyType, OptionallyUpdate, CommitAwareType, SerializesValue
+class FileType implements PropertyType, OptionallyUpdate, PreStoreNormalize, PostStoreCommit, SerializesValue
 {
     const TYPE_IMAGE = 'image';
 
@@ -36,6 +37,7 @@ class FileType implements PropertyType, OptionallyUpdate, CommitAwareType, Seria
         }
 
         $fileType = $options['fileType'] ?? null;
+        $deleteElementNamePrefix = $options['deleteNamePrefix'] ?? null;
         $asImage = $fileType === FileType::TYPE_IMAGE;
 
         $previewsBox = Html::el('div', [
@@ -50,13 +52,17 @@ class FileType implements PropertyType, OptionallyUpdate, CommitAwareType, Seria
         foreach ($this->preview as $i => $fileName) {
             if ($filePreviewEl = $this->createFilePreviewEl($fileName, $publicPath, $asImage)) {
                 $previewItemWrapper = Html::el('div', ['class' => 'preview-item']);
-                $deleteCheckbox = Html::el('input', [
-                    'type' => 'checkbox',
-                    'class' => 'delete-toggle',
-                    'title' => $this->translate('netteTypeful.fileUpload.delete'),
-                    'name' => "$this->htmlName-$i-delete",
-                ]);
-                $previewItemWrapper->addHtml($deleteCheckbox);
+                if ($deleteElementNamePrefix) {
+                    $deleteCheckbox = Html::el('input', [
+                        'type' => 'checkbox',
+                        'class' => 'delete-toggle',
+                        'title' => $this->translate('netteTypeful.fileUpload.delete'),
+                        'name' => "$deleteElementNamePrefix-$i-delete",
+                    ]);
+
+                    $previewItemWrapper->addHtml($deleteCheckbox);
+                }
+
                 $previewItemWrapper->addHtml($filePreviewEl);
                 $previewsBox->addHtml($previewItemWrapper);
             }
@@ -123,32 +129,47 @@ class FileType implements PropertyType, OptionallyUpdate, CommitAwareType, Seria
         return null;
     }
 
-    public function shouldUpdate($value, array $typeOptions) {
-        // TODO: Implement multi-file
-        if (!($value instanceof FileUpload)) {
-            throw new InvalidArgumentException("Invalid type");
-        }
+    public function shouldUpdate($value, $currentValue, array $typeOptions): bool {
+        if (is_array($value)) {
+            foreach ($value as $item) {
+                if ($this->shouldUpdate($item, null, $typeOptions)) {
+                    return true;
+                }
+            }
 
-        if (!$value->hasFile()) {
             return false;
         }
 
-        return true;
+        if ($value instanceof FileDelete) {
+            return true;
+        }
+        if ($value instanceof FileUpload) {
+            return $value->hasFile();
+        }
+
+        if (!is_string($value) && !is_null($value)) {
+            throw new InvalidArgumentException("Invalid type");
+        }
+
+        return false;
     }
 
-    public function normalizePreCommit($value, array $options, array $entityData = [])
+    public function normalizePreStore($value, array $options, array $entityData = [])
     {
         /** @var FilesystemInterface $storage */
         $storage = $options['storage'];
-        $preferredName = $options['preferredName'] ?? null;
-
-        if ($preferredName && $preferredName[0] === '!') {
-            $field = mb_substr($preferredName, 1);
-            $preferredName = $entityData[$field] ?? null;
-            if (!$preferredName && $preferredName !== '0') {
-                throw new InvalidArgumentException("Preferred name with referece to !$field is not set");
+        $getPreferredName = function() use ($options, $entityData) {
+            $preferredName = $options['preferredName'] ?? null;
+            if ($preferredName && $preferredName[0] === '!') {
+                $field = mb_substr($preferredName, 1);
+                $preferredName = $entityData[$field] ?? null;
+                if (!$preferredName && $preferredName !== '0') {
+                    throw new InvalidArgumentException("Preferred name with referece to !$field is not set");
+                }
             }
-        }
+
+            return $preferredName;
+        };
 
         $result = [];
         foreach (is_array($value) ? $value : [$value] as $item) {
@@ -156,7 +177,10 @@ class FileType implements PropertyType, OptionallyUpdate, CommitAwareType, Seria
                 $result[] = $item;
                 continue;
             }
-            $result[] = $this->storeFileUpload($item, $storage, $preferredName);
+
+            if ($item->hasFile()) {
+                $result[] = $this->storeFileUpload($item, $storage, $getPreferredName());
+            }
         }
         if ($options['multiple'] ?? false) {
             return $result;

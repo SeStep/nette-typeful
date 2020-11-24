@@ -38,6 +38,7 @@ class TypefulUploadControl extends UploadControl
         } else {
             $preview = [$value];
         }
+
         $this->preview = $preview;
     }
 
@@ -47,10 +48,10 @@ class TypefulUploadControl extends UploadControl
         $value = parent::getValue();
 
         $deleteData = [];
-        foreach ($this->preview as $i => $filenme) {
+        foreach ($this->preview as $i => $fileName) {
             $delete = $this->getHttpData(Form::DATA_TEXT, "-$i-delete") === "on";
             if ($delete) {
-                $deleteData[] = new FileDelete($filenme);
+                $deleteData[] = new FileDelete($fileName);
             }
         }
 

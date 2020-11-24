@@ -20,7 +20,8 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^9.3",
-    "nette/di": "^3.0"
+    "nette/di": "^3.0",
+    "tracy/tracy": "^2.7"
   },
   "suggest": {
     "nette/di": "For simpler integration into Nette DI based applications",

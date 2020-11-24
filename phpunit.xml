@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+>
+    <extensions>
+        <extension class="SeStep\NetteTypeful\TestUtils\ContainerInitializerExtension">
+            <arguments>
+                <string>SeStep\NetteTypeful\TestBootstrap::createContainer</string>
+                <array>
+                    <element key="0">
+                        <array>
+                            <element key="name"><string>initializeTestingStorage</string></element>
+                        </array>
+                    </element>
+                </array>
+            </arguments>
+        </extension>
+    </extensions>
+
+    <testsuites>
+        <testsuite name="SeStep/NetteTypeful">
+            <directory>test</directory>
+            <exclude>test/TestUtils</exclude>
+        </testsuite>
+
+        <testsuite name="SeStep/NetteTypeful test utils">
+            <directory>test/TestUtils</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
