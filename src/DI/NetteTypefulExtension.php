@@ -118,9 +118,15 @@ class NetteTypefulExtension extends CompilerExtension
 
     private function initializeFactoriesForBaseTypes(ContainerBuilder $builder, string $typefulExtensionName)
     {
-        $builder->getDefinition("$typefulExtensionName.type.$typefulExtensionName.int")
-            ->addTag(self::TAG_TYPE_CONTROL_FACTORY, 'SeStep\NetteTypeful\Forms\StandardControlsFactory::createInt');
-        $builder->getDefinition("$typefulExtensionName.type.$typefulExtensionName.text")
-            ->addTag(self::TAG_TYPE_CONTROL_FACTORY, 'SeStep\NetteTypeful\Forms\StandardControlsFactory::createText');
+        $baseTypeFactoryMap = [
+            'text' => 'SeStep\NetteTypeful\Forms\StandardControlsFactory::createText',
+            'int' => 'SeStep\NetteTypeful\Forms\StandardControlsFactory::createInt',
+            'number' => 'SeStep\NetteTypeful\Forms\StandardControlsFactory::createNumber',
+        ];
+
+        foreach ($baseTypeFactoryMap as $type => $factory) {
+            $builder->getDefinition("$typefulExtensionName.type.$typefulExtensionName.$type")
+                ->addTag(self::TAG_TYPE_CONTROL_FACTORY, $factory);
+        }
     }
 }

@@ -14,7 +14,7 @@
   },
   "require": {
     "php": "^7.3",
-    "sestep/typeful": "0.8",
+    "sestep/typeful": "0.9.1",
     "nette/forms": "^3.0",
     "league/flysystem": "^1.1"
   },

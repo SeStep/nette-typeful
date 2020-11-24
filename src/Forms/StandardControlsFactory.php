@@ -6,8 +6,8 @@ use Nette\Forms\Form;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\TextArea;
 use Nette\Forms\Controls\TextInput;
-use Nette\Forms\Controls\UploadControl;
 use Nette\InvalidArgumentException;
+use SeStep\NetteTypeful\Controls\NumberInput;
 use SeStep\NetteTypeful\Controls\TypefulUploadControl;
 use SeStep\NetteTypeful\Types\FileType;
 use SeStep\Typeful\Types as TypefulTypes;
@@ -33,8 +33,12 @@ class StandardControlsFactory
 
     public static function createInt(string $label, TypefulTypes\IntType $intType, array $options)
     {
-        $control = new TextInput($label);
-        $control->setHtmlType('number');
+        return self::createNumber($label, $intType, $options);
+    }
+
+    public static function createNumber(string $label, TypefulTypes\NumberType $type, array $options)
+    {
+        $control = new NumberInput($label);
         self::assignAttributes($control, $options, ['min', 'max', 'step']);
 
         return $control;

@@ -35,7 +35,7 @@ class EntityFormPopulatorTest extends TestCase
         self::assertEquals('text', $controls['class']->control->type );
 
         self::assertInstanceOf(TextInput::class, $controls['legCount']);
-        self::assertEquals('number', $controls['legCount']->control->type);
+        self::assertEquals('numeric', $controls['legCount']->control->type);
 
         self::assertInstanceOf(TextArea::class, $controls['description']);
     }
