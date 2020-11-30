@@ -11,10 +11,11 @@ use SeStep\Typeful\Types\OptionallyUpdate;
 use SeStep\Typeful\Types\PostStoreCommit;
 use SeStep\Typeful\Types\PreStoreNormalize;
 use SeStep\Typeful\Types\PropertyType;
+use SeStep\Typeful\Types\RendersValue;
 use SeStep\Typeful\Types\SerializesValue;
 use SeStep\Typeful\Validation\ValidationError;
 
-class FileType implements PropertyType, OptionallyUpdate, PreStoreNormalize, PostStoreCommit, SerializesValue
+class FileType implements PropertyType, OptionallyUpdate, PreStoreNormalize, PostStoreCommit, SerializesValue, RendersValue
 {
     const TYPE_IMAGE = 'image';
 
