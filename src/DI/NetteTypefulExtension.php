@@ -122,6 +122,7 @@ class NetteTypefulExtension extends CompilerExtension
             'text' => 'SeStep\NetteTypeful\Forms\StandardControlsFactory::createText',
             'int' => 'SeStep\NetteTypeful\Forms\StandardControlsFactory::createInt',
             'number' => 'SeStep\NetteTypeful\Forms\StandardControlsFactory::createNumber',
+            'selection' => 'SeStep\NetteTypeful\Forms\StandardControlsFactory::createSelection',
         ];
 
         foreach ($baseTypeFactoryMap as $type => $factory) {

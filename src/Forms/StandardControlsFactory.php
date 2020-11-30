@@ -2,6 +2,8 @@
 
 namespace SeStep\NetteTypeful\Forms;
 
+use Nette\Forms\Controls\MultiSelectBox;
+use Nette\Forms\Controls\SelectBox;
 use Nette\Forms\Form;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\TextArea;
@@ -40,6 +42,15 @@ class StandardControlsFactory
     {
         $control = new NumberInput($label);
         self::assignAttributes($control, $options, ['min', 'max', 'step']);
+
+        return $control;
+    }
+
+    public static function createSelection(string $label, TypefulTypes\SelectionType $type, array $options)
+    {
+        $multiple = $options['multiple'] ?? false;
+        $control = $multiple ? new MultiSelectBox($label) : new SelectBox($label);
+        $control->setItems($type->getItems($options));
 
         return $control;
     }
