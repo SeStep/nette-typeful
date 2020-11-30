@@ -45,12 +45,12 @@ class FileType implements PropertyType, OptionallyUpdate, PreStoreNormalize, Pos
             'class' => 'previews-box',
         ]);
 
-        if (empty($this->preview)) {
+        if (empty($value)) {
             $previewsBox->addHtml(Html::el('span', $this->translate("netteTypeful.fileUpload.no_preview")));
             return $previewsBox;
         }
 
-        foreach ($this->preview as $i => $fileName) {
+        foreach ($value as $i => $fileName) {
             if ($filePreviewEl = $this->createFilePreviewEl($fileName, $publicPath, $asImage)) {
                 $previewItemWrapper = Html::el('div', ['class' => 'preview-item']);
                 if ($deleteElementNamePrefix) {

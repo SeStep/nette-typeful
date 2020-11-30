@@ -78,7 +78,9 @@ class TypefulUploadControl extends UploadControl
 
         $elWrapper->addHtml($parentControl);
 
-        if ($previewElement = $this->type->renderValue($this->preview, $this->typeOptions)) {
+        $options = $this->typeOptions;
+        $options['deleteNamePrefix'] = $this->getHtmlName();
+        if ($previewElement = $this->type->renderValue($this->preview, $options)) {
             $elWrapper->addHtml($previewElement);
         }
 
