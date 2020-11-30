@@ -4,6 +4,7 @@ namespace SeStep\NetteTypeful\Latte;
 
 use SeStep\Typeful\Service\EntityDescriptorRegistry;
 use SeStep\Typeful\Service\TypeRegistry;
+use SeStep\Typeful\Service\ValueRenderer;
 
 class PropertyFilter
 {
@@ -11,17 +12,17 @@ class PropertyFilter
     private $typeRegistry;
     /** @var EntityDescriptorRegistry */
     private $entityDescriptorRegistry;
+    /** @var ValueRenderer */
+    private $valueRenderer;
 
-    /**
-     * PropertyFilter constructor.
-     *
-     * @param TypeRegistry $typeRegistry
-     * @param EntityDescriptorRegistry $entityDescriptorRegistry
-     */
-    public function __construct(TypeRegistry $typeRegistry, EntityDescriptorRegistry $entityDescriptorRegistry)
-    {
+    public function __construct(
+        TypeRegistry $typeRegistry,
+        EntityDescriptorRegistry $entityDescriptorRegistry,
+        ValueRenderer $valueRenderer
+    ) {
         $this->typeRegistry = $typeRegistry;
         $this->entityDescriptorRegistry = $entityDescriptorRegistry;
+        $this->valueRenderer = $valueRenderer;
     }
 
     public function displayPropertyName(string $property, string $entityClass = null)
@@ -46,6 +47,6 @@ class PropertyFilter
             return 'nada';
         }
 
-        return $propertyType->renderValue($value, $options);
+        return $this->valueRenderer->render($value, $propertyType, $options);
     }
 }
