@@ -5,7 +5,7 @@ namespace SeStep\NetteTypeful\Types;
 use League\Flysystem\FilesystemInterface;
 use Nette\Http\FileUpload;
 use Nette\InvalidArgumentException;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Utils\Html;
 use SeStep\Typeful\Types\OptionallyUpdate;
 use SeStep\Typeful\Types\PostStoreCommit;
@@ -21,10 +21,10 @@ class FileType implements PropertyType, OptionallyUpdate, PreStoreNormalize, Pos
     const FILE_NOT_FOUND = 'typeful.error.fileNotFound';
     const FILE_UPLOAD_ERROR = 'typeful.error.fileUploadError';
 
-    /** @var ITranslator */
+    /** @var Translator */
     private $translator;
 
-    public function __construct(ITranslator $translator = null)
+    public function __construct(Translator $translator = null)
     {
         $this->translator = $translator;
     }

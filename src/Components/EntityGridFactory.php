@@ -2,7 +2,7 @@
 
 namespace SeStep\NetteTypeful\Components;
 
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use SeStep\Typeful\Service\EntityDescriptorRegistry;
 use Ublaboo\DataGrid\DataGrid;
 
@@ -11,7 +11,7 @@ class EntityGridFactory
     /** @var EntityDescriptorRegistry */
     private $entityDescriptorRegistry;
 
-    /** @var ITranslator */
+    /** @var Translator */
     private $translator;
 
     public function __construct(EntityDescriptorRegistry $entityDescriptorRegistry)
@@ -19,7 +19,7 @@ class EntityGridFactory
         $this->entityDescriptorRegistry = $entityDescriptorRegistry;
     }
 
-    public function setTranslator(ITranslator $translator)
+    public function setTranslator(Translator $translator)
     {
         $this->translator = $translator;
     }
