@@ -14,7 +14,6 @@ use SeStep\Typeful\DI\RegisterTypeful;
 use SeStep\Typeful\DI\TypefulExtension;
 use SeStep\NetteTypeful\Components;
 use SeStep\NetteTypeful\Forms;
-use SeStep\NetteTypeful\Latte\PropertyFilter;
 use SeStep\NetteTypeful\Service;
 
 class NetteTypefulExtension extends CompilerExtension
@@ -48,10 +47,8 @@ class NetteTypefulExtension extends CompilerExtension
             'entityFormFactory' => Forms\EntityFormFactory::class,
             'entityGridFactory' => Components\EntityGridFactory::class,
             'schemaConverter' => Service\SchemaConverter::class,
+            'propertyFilter' => Service\PropertyFilter::class,
         ]);
-
-        $builder->addDefinition($this->prefix('propertyFilter'))
-            ->setType(PropertyFilter::class);
 
         if ($builder->hasDefinition('nette.latteFactory')) {
             $this->loadLatteFilters($builder, $config);

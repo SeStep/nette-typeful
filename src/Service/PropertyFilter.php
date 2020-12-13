@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SeStep\NetteTypeful\Latte;
+namespace SeStep\NetteTypeful\Service;
 
 use SeStep\Typeful\Service\EntityDescriptorRegistry;
 use SeStep\Typeful\Service\TypeRegistry;
