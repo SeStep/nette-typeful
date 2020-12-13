@@ -47,6 +47,8 @@ class PropertyFilter
             return 'nada';
         }
 
-        return $this->valueRenderer->render($value, $propertyType, $options);
+        $renderOptions = array_merge($property->getOptions(), $options);
+
+        return $this->valueRenderer->render($value, $propertyType, $renderOptions);
     }
 }
